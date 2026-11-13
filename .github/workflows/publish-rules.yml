@@ -51,7 +51,7 @@ jobs:
           const lines = [
             'https://cloudflare-dns.com/dns-query',
             '# Source: felixonmars/dnsmasq-china-list (WTFPL-2.0)',
-            ...[...domains].sort().map(domain => `[/${domain}/]tls://dns.alidns.com`),
+            ...[...domains].sort().map(domain => `[/${domain}/]https://doh.pub/dns-query https://dns.alidns.com/dns-query`),
           ];
           writeFileSync('upstreams.txt', lines.join('\n') + '\n', 'utf8');
           console.log(`Generated ${domains.size} rules; skipped ${skipped} unsupported lines.`);
@@ -72,4 +72,4 @@ jobs:
           gh release create "rules-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" upstreams.txt \
             --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --latest \
             --title "DNS 规则 $(TZ=Asia/Shanghai date +%F)" \
-            --notes '域名来源为 [dnsmasq-china-list](https://github.com/felixonmars/dnsmasq-china-list)。清单内域名走阿里 DoT，其余走 Cloudflare DoH。'
+            --notes '域名来源为 [dnsmasq-china-list](https://github.com/felixonmars/dnsmasq-china-list)。清单内域名走腾讯 DNSPod 或阿里公共 DNS 的 DoH，其余走 Cloudflare DoH。'
